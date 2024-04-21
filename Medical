@@ -7,18 +7,18 @@ import matplotlib.pyplot as plt
 
 # Load the dataset
 
-pharmacogenetic_df = pd.read_csv("pharmacogenetics.txt")
+pharmacogenetic_df = pd.read_csv("pharmacogenetics.csv")
 
 # Display basic information about the dataset
 print("Dataset Info:")
 print(pharmacogenetic_df.info())
 
 # Summary statistics of numerical columns
-print("\nSummary Statistics:")
+print("Summary_Statistics:")
 print(pharmacogenetic_df.describe())
 
 # Check for missing values
-print("\nMissing Values:")
+print("Missing_Values:")
 print(pharmacogenetic_df.isnull().sum())
 
 # Data exploration - visualize the distribution of DrugResponse
@@ -60,11 +60,11 @@ predictions = model.predict(X_test)
 
 # Evaluate the model
 accuracy = accuracy_score(y_test, predictions)
-print("\nModel Evaluation:")
+print("Model Evaluation:")
 print("Accuracy:", accuracy)
-print("\nClassification Report:")
+print("Classification Report:")
 print(classification_report(y_test, predictions))
-print("\nConfusion Matrix:")
+print("Confusion Matrix:")
 sns.heatmap(confusion_matrix(y_test, predictions), annot=True, fmt='d', cmap='Blues')
 plt.title('Confusion Matrix')
 plt.show()
