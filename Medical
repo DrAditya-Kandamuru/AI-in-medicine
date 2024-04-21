@@ -1,4 +1,71 @@
-weight = int(input("enter the weight in kg)
-height = int(input("enter the height in meters)
-bmi = weight/(height)**2
-print(bmi)
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Load the dataset
+
+pharmacogenetic_df = pd.read_csv("pharmacogenetics.txt")
+
+# Display basic information about the dataset
+print("Dataset Info:")
+print(pharmacogenetic_df.info())
+
+# Summary statistics of numerical columns
+print("\nSummary Statistics:")
+print(pharmacogenetic_df.describe())
+
+# Check for missing values
+print("\nMissing Values:")
+print(pharmacogenetic_df.isnull().sum())
+
+# Data exploration - visualize the distribution of DrugResponse
+sns.countplot(x='DrugResponse', data=pharmacogenetic_df)
+plt.title('Distribution of Drug Response')
+plt.show()
+
+# Data exploration - visualize the relationship between Age and DrugResponse
+sns.boxplot(x='DrugResponse', y='Age', data=pharmacogenetic_df)
+plt.title('Age Distribution by Drug Response')
+plt.show()
+
+# Convert categorical variable (Gender) into numerical using one-hot encoding
+pharmacogenetic_df = pd.get_dummies(pharmacogenetic_df, columns=['Gender'], drop_first=True)
+
+# Split the dataset into features (X) and target variable (y)
+X = pharmacogenetic_df.drop('DrugResponse', axis=1)
+y = pharmacogenetic_df['DrugResponse']
+
+# Split the dataset into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Create and train the Random Forest classifier
+model = RandomForestClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+# Extract feature importance
+feature_importance = model.feature_importances_
+features = X.columns
+
+# Visualize feature importance
+plt.figure(figsize=(10, 6))
+sns.barplot(x=feature_importance, y=features, palette="viridis")
+plt.title("Feature Importance")
+plt.show()
+
+# Make predictions on the test set
+predictions = model.predict(X_test)
+
+# Evaluate the model
+accuracy = accuracy_score(y_test, predictions)
+print("\nModel Evaluation:")
+print("Accuracy:", accuracy)
+print("\nClassification Report:")
+print(classification_report(y_test, predictions))
+print("\nConfusion Matrix:")
+sns.heatmap(confusion_matrix(y_test, predictions), annot=True, fmt='d', cmap='Blues')
+plt.title('Confusion Matrix')
+plt.show()
+
